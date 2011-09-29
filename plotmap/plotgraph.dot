@@ -1,0 +1,41 @@
+graph G {
+    rankdir = "LR"
+    subgraph cluster_legend {
+        label = "Legend";
+        color=gray;
+        "legend-character" [label="Character", shape=box, URL="legend-character.html"];
+        "objective" [label="Objective", shape=ellipse, URL="objective.html"];
+        "item-example" [label="Item", shape=diamond, URL="item-example.html"];
+        "group-example" [label="Group", shape=octagon, URL="group-example.html"];
+        "ally1" [label="Allies", shape=box, URL="ally1.html"];
+        "ally2" [label="Allies", shape=box, URL="ally2.html"];
+        "weak-ally1" [label="Weak allies", shape=box, URL="weak-ally1.html"];
+        "weak-ally2" [label="Weak allies", shape=box, URL="weak-ally2.html"];
+        "group-member" [label="Member", shape=box, URL="group-member.html"];
+        "group" [label="Group", shape=octagon, URL="group.html"];
+        "enemy1" [label="Enemies", shape=box, URL="enemy1.html"];
+        "enemy2" [label="Enemies", shape=box, URL="enemy2.html"];
+        "enemy" [label="Enemy", shape=box, URL="enemy.html"];
+        "unaware" [label="Unaware target", shape=box, URL="unaware.html"];
+        "watcher" [label="Watcher", shape=box, URL="watcher.html"];
+        "watched" [label="Watched", shape=box, URL="watched.html"];
+        "seeker" [label="Seeker", shape=box, URL="seeker.html"];
+        "sought" [label="Sought", shape=ellipse, URL="sought.html"];
+        "possessor" [label="Possessor", shape=box, URL="possessor.html"];
+        "owner" [label="Owner", shape=box, URL="owner.html"];
+        "item" [label="Item", shape=diamond, URL="item.html"];
+        "enchanter" [label="Enchanter", shape=box, URL="enchanter.html"];
+        "enchanted" [label="Enchanted", shape=box, URL="enchanted.html"];
+    }
+
+    "ally1" -- "ally2" [color=green, style=solid];
+    "weak-ally1" -- "weak-ally2" [color=green, style=dashed];
+    "group-member" -- "group" [color=green, style=bold];
+    "enemy1" -- "enemy2" [color=red, style=solid];
+    "enemy" -- "unaware" [color=red, style=solid, dir=forward];
+    "watcher" -- "watched" [color=black, style=dashed, dir=forward];
+    "seeker" -- "sought" [color=blue, style=solid, dir=forward];
+    "possessor" -- "sought" [color=purple, style=solid];
+    "owner" -- "item" [color=black, style=solid, dir=forward];
+    "enchanter" -- "enchanted" [color=orange, style=solid, dir=forward];
+};
