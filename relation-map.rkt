@@ -113,9 +113,14 @@
     (node-type organization octagon)
     (edge-type knows black solid forward)
 
+    (character "Tara")
     (new-section "All Pathwalkers")
     (character "Ged")
     (organization "Black Star Guild")
     (character "Iawen" none)
     (knows "Ged" "Iawen")
     (output-graph)))
+
+(provide node-type edge-type)
+(provide/contract
+ (new-section (-> string? any)))
