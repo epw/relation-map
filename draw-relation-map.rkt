@@ -3,12 +3,35 @@
 
 (require "relation-map.rkt")
 
-(define (draw-relation-map in)
-  
+(define (get-write-line in out)
+  (let ((line (read-line in)))
+    (unless (eof-object? line)
+      (display line out)
+      (display "\n" out)
+      (get-write-line in out))))
+
+(define (temporary-file-from-port port)
+  (let ((filename (format "/tmp/racket-~a" (current-milliseconds))))
+    (call-with-output-file filename
+      (lambda (out)
+	(get-write-line port out)))
+    filename))
+
+(define-namespace-anchor a)
+
+(define (draw-relation-map in-file)
+  (let ((ns (make-base-empty-namespace)))
+    (namespace-attach-module (namespace-anchor->empty-namespace a)
+			     "relation-map.rkt" ns)
+    (parameterize ((current-namespace ns))
+      (namespace-require racket)
+      (namespace-require "relation-map.rkt")
+      (load in-file))
+    (output-graph)))
 
 (define (main)
   (if (zero? (vector-length (current-command-line-arguments)))
-      (draw-relation-map (current-input-port))
-      (call-with-input-file (vector-ref (current-command-line-arguments) 0))))
+      (draw-relation-map (temporary-file-from-port (current-input-port)))
+      (draw-relation-map (vector-ref (current-command-line-arguments) 0))))
 
 (main)
