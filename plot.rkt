@@ -2,6 +2,8 @@
 
 (require "relation-map.rkt")
 
+(provide new-section none)
+
 (node-type character box)
 (node-type objective ellipse)
 (node-type item diamond)

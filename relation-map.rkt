@@ -1,4 +1,3 @@
-#! /usr/bin/env racket
 #lang racket
 
 (require "indent.rkt")
@@ -112,20 +111,6 @@
 	 (new-edge node1 node2 'color 'style 'dir))
        (provide/contract (new-type (-> string? string? any)))))))
 
-(node-type character box)
-(node-type organization octagon)
-(rule knows black)
-
-(define (example)
-  (parameterize ((graph (list (section null empty empty))))
-    (character "Tara")
-    (new-section "All Pathwalkers")
-    (character "Ged")
-    (organization "Black Star Guild")
-    (character "Iawen" none)
-    (knows "Ged" "Iawen")
-    (output-graph)))
-
-(provide node-type rule)
+(provide node-type rule none output-graph)
 (provide/contract
  (new-section (-> string? any)))
