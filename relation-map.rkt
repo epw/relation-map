@@ -97,22 +97,27 @@
   (handle-section a-section)))
 
 (define-syntax-rule (node-type new-type shape)
-  (define (new-type name (place (first (graph))))
-    (new-node name 'shape place)))
+  (begin
+    (define (new-type name (place (first (graph))))
+      (new-node name 'shape place))
+    (provide/contract (new-type (->* (string?) (section?) any)))))
 
-(define-syntax edge-type
+(define-syntax rule
   (syntax-rules ()
-    ((edge-type new-type color style) (edge-type new-type color style null))
-    ((edge-type new-type color style dir)
-     (define (new-type node1 node2)
-       (new-edge node1 node2 'color 'style 'dir)))))
+    ((rule new-type color) (rule new-type color solid null))
+    ((rule new-type color style) (rule new-type color style null))
+    ((rule new-type color style dir)
+     (begin
+       (define (new-type node1 node2)
+	 (new-edge node1 node2 'color 'style 'dir))
+       (provide/contract (new-type (-> string? string? any)))))))
+
+(node-type character box)
+(node-type organization octagon)
+(rule knows black)
 
 (define (example)
   (parameterize ((graph (list (section null empty empty))))
-    (node-type character box)
-    (node-type organization octagon)
-    (edge-type knows black solid forward)
-
     (character "Tara")
     (new-section "All Pathwalkers")
     (character "Ged")
@@ -121,6 +126,6 @@
     (knows "Ged" "Iawen")
     (output-graph)))
 
-(provide node-type edge-type)
+(provide node-type rule)
 (provide/contract
  (new-section (-> string? any)))
