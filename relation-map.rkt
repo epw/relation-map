@@ -15,21 +15,15 @@
 		   ((none a ...) ((get-none) a ...))
 		   (none (get-none))))
 
-(define new-node
-  (case-lambda
-    ((name shape) (new-node name shape (first (graph))))
-    ((name shape place)
-     (set-section-nodes! place (cons (node name shape)
-				     (section-nodes place))))))
+(define (new-node name shape (place (first (graph))))
+  (set-section-nodes! place (cons (node name shape)
+				  (section-nodes place))))
 
-(define new-edge 
-  (case-lambda
-    ((node1 node2 color style) (new-edge node1 node2 color style null))
-    ((node1 node2 color style dir)
-     (set-section-edges! none (cons (edge (get-node node1) (get-node node2)
-					  color style (if (eq? dir 'null) null
-							  dir))
-				    (section-edges none))))))
+(define (new-edge node1 node2 color style (dir null))
+  (set-section-edges! none (cons (edge (get-node node1) (get-node node2)
+				       color style (if (eq? dir 'null) null
+						       dir))
+				 (section-edges none))))
 
 (define (new-section name)
   (graph (cons (section name empty empty) (graph))))
@@ -103,10 +97,8 @@
   (handle-section a-section)))
 
 (define-syntax-rule (node-type new-type shape)
-  (define new-type
-    (case-lambda
-      ((name) (new-node name 'shape))
-      ((name place) (new-node name 'shape place)))))
+  (define (new-type name (place (first (graph))))
+    (new-node name 'shape place)))
 
 (define-syntax edge-type
   (syntax-rules ()
