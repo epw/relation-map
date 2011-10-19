@@ -32,7 +32,7 @@
 (define (output-graph)
   (display "graph G {\n")
   (indent
-   (for ((a-section (graph)))
+   (for ((a-section (reverse (graph))))
 	(output-section a-section)))
   (display "}\n"))
 
@@ -41,7 +41,7 @@
 		    (node-shape a-node))))
 
 (define (handle-section a-section)
-  (for ((a-node (section-nodes a-section)))
+  (for ((a-node (reverse (section-nodes a-section))))
        (output-node a-node)))
 
 (define (output-section a-section)
@@ -56,14 +56,18 @@
 	(indented "}"))
   (handle-section a-section)))
 
-(define character
-  (case-lambda
-    ((name) (new-node name 'box))
-    ((name place) (new-node name 'box place))))
+(define-syntax-rule (node-type new-type shape)
+  (define new-type
+    (case-lambda
+      ((name) (new-node name 'shape))
+      ((name place) (new-node name 'shape place)))))
 
 (define (example)
   (parameterize ((graph (list (section null empty empty))))
+    (node-type character box)
+    (node-type organization octagon)
     (new-section "All Pathwalkers")
     (character "Ged")
+    (organization "Black Star Guild")
     (character "Iawen" none)
     (output-graph)))
