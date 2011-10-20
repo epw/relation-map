@@ -1,4 +1,5 @@
-#lang racket
+#lang racket/base
+(require racket/contract)
 
 (define indentation (make-parameter 0))
 
