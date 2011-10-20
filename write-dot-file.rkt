@@ -35,6 +35,7 @@
   (parameterize ((current-namespace (make-base-empty-namespace)))
     (namespace-require "definition-base.rkt")
     (eval `(allow-definitions* ,@(get-definitions)))
+    (eval `(url-predicate ,(url-predicate)))
     (with-handlers ((exn:fail?
 		     (lambda (v)
 		       (display

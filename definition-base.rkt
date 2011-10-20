@@ -5,4 +5,4 @@
 (provide #%top-interaction #%app #%datum #%top quasiquote)
 
 (provide new-section none use label output-graph node-type rule
-	 allow-definitions allow-definitions*)
+	 url-predicate allow-definitions allow-definitions*)
