@@ -20,4 +20,4 @@
 (rule owns black solid forward)
 (rule controls orange solid forward)
 
-(provide #%top-interaction #%app)
+(provide #%top-interaction #%app #%datum)
