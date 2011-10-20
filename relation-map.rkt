@@ -109,7 +109,7 @@
      (define (new-type node1 node2)
        (new-edge node1 node2 'color 'style 'dir)))))
 
-(define dsls (make-parameter (list "plot.rkt")))
+(define dsls (make-parameter (list "plot.def")))
 
 (define (use definitions)
   (if (member definitions (dsls))

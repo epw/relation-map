@@ -5,7 +5,7 @@
 
 (rule allies green)
 (rule weakly-allied green dashed)
-(rule member-of green bold forward)
+(rule has-member green bold forward)
 (rule enemies red)
 (rule hates red solid forward)
 (rule watching black dashed forward)
