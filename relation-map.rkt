@@ -95,28 +95,18 @@
 	(indented "}"))
   (handle-section a-section)))
 
-(define-syntax-rule (node-type-no-export new-type shape)
+(define-syntax-rule (node-type new-type shape)
   (define (new-type name (place (first (graph))))
     (new-node name 'shape place)))
-
-(define-syntax-rule (node-type new-type shape)
-  (begin
-    (node-type-no-export new-type shape)
-    (provide/contract (new-type (->* (string?) (section?) any)))))
-
-(define-syntax-rule (rule-no-export new-type color style dir)
-  (define (new-type node1 node2)
-    (new-edge node1 node2 'color 'style 'dir)))
 
 (define-syntax rule
   (syntax-rules ()
     ((rule new-type color) (rule new-type color solid null))
     ((rule new-type color style) (rule new-type color style null))
     ((rule new-type color style dir)
-     (begin
-       (rule-no-export new-type color style null)
-       (provide/contract (new-type (-> string? string? any)))))))
+     (define (new-type node1 node2)
+       (new-edge node1 node2 'color 'style 'dir)))))
 
-(provide node-type node-type-no-export rule rule-no-export none output-graph)
+(provide node-type rule none output-graph)
 (provide/contract
  (new-section (-> string? any)))
