@@ -2,6 +2,7 @@
 
 (require "relation-map.rkt")
 
-(provide #%top-interaction #%app #%datum #%top)
+(provide #%top-interaction #%app #%datum #%top quasiquote)
 
-(provide new-section none use label output-graph node-type rule)
+(provide new-section none use label output-graph node-type rule
+	 allow-definitions allow-definitions*)

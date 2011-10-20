@@ -1,6 +1,7 @@
 #lang racket/base
 (require racket/list)
 (require racket/contract)
+(require racket/path)
 
 (require "indent.rkt")
 
@@ -61,8 +62,10 @@
 	(output-section a-section)))
   (display "}\n"))
 
+(define url-predicate (make-parameter "nodes/"))
+
 (define (url identifier)
-  (format "nodes/~a.html" identifier))
+  (format "~a~a.html" (url-predicate) identifier))
 
 (define (node-representation a-node)
   (format "\"~a\"" (node-name a-node)))
@@ -114,10 +117,27 @@
      (define (new-type node1 node2)
        (new-edge node1 node2 'color 'style 'dir)))))
 
-(define dsls (make-parameter (list "plot.def")))
+(define definition-files (make-parameter empty))
+
+(define (allow-definitions definitions)
+  (if (directory-exists? definitions)
+      (definition-files (append (map (lambda (path)
+				       (format "~a/~a" definitions
+					       (path->string path)))
+				     (directory-list definitions))
+				(definition-files)))
+      (definition-files (cons definitions (definition-files)))))
+
+(define (allow-definitions* . definitions)
+  (definition-files (append definitions (definition-files))))
 
 (define (use definitions)
-  (if (member definitions (dsls))
+  (if (not (empty? (filter (lambda (def)
+			     (string=? definitions
+				       (path->string
+					(file-name-from-path
+					 (string->path def)))))
+		      (definition-files))))
       (load definitions)
       (display (format "Error: definitions file ~a not accepted.~%"
 		       definitions) (current-error-port))))
@@ -125,6 +145,7 @@
 (define-syntax-rule (label object identifier)
   (define identifier object))
 
-(provide node-type rule none use label output-graph)
+(provide node-type rule none use label output-graph allow-definitions
+	 allow-definitions* url-predicate)
 (provide/contract
  (new-section (-> string? any)))

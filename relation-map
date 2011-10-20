@@ -1,18 +1,32 @@
 #! /bin/bash
 
-write-dot-file.rkt "$1" > $1.dot
+function last () {
+    arg=
+    for i in $@
+    do
+	arg=$i
+    done
+    echo $arg
+}
 
-maphtml.sh $1.dot $1.html
+file=`last $@`
+
+write-dot-file.rkt $* > $file.dot
+
+maphtml.sh $file.dot $file.html
 
 function get_line () {
     head -$2 $1.dot | tail -1
 }
 
-for linenum in `grep -n '^\s*"[^"]*" \[' $1.dot | awk -F : '{print $1}'`
+for linenum in `grep -n '^\s*"[^"]*" \[' $file.dot | awk -F : '{print $1}'`
 do
-    line=`get_line $1 $linenum`
+    line=`get_line $file $linenum`
     name=`echo $line | grep -o '"[^"]*"' | head -1 | sed 's/"//g'`
     url=`echo $line | grep -o '"[^"]*"' | tail -1 | sed 's/"//g'`
-    cp blank.html $url
-    sed -i "s/\$TITLE/$name/g" $url
+    if [ ! -f $url ]
+    then
+	cp blank.html $url
+	sed -i "s/\$TITLE/$name/g" $url
+    fi
 done
