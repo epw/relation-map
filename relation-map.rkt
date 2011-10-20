@@ -17,14 +17,15 @@
 		   (none (get-none))))
 
 (define (new-node name shape (place (first (graph))))
-  (set-section-nodes! place (cons (node name shape)
-				  (section-nodes place))))
+  (let ((the-node (node name shape)))
+    (set-section-nodes! place (cons the-node (section-nodes place)))
+    the-node))
 
 (define (new-edge node1 node2 color style (dir null))
-  (set-section-edges! none (cons (edge (get-node node1) (get-node node2)
-				       color style (if (eq? dir 'null) null
-						       dir))
-				 (section-edges none))))
+  (let ((the-edge (edge (get-node node1) (get-node node2) color style
+			(if (eq? dir 'null) null dir))))
+    (set-section-edges! none (cons the-edge (section-edges none)))
+    the-edge))
 
 (define (new-section name)
   (graph (cons (section name empty empty) (graph))))
@@ -41,9 +42,13 @@
 	      (rest the-graph))))
   (iter empty (graph)))
 
-(define (get-node name)
-  (first
-   (filter (lambda (a-node) (string=? name (node-name a-node))) (all-nodes))))
+(define (get-node node-identifier)
+  (cond ((node? node-identifier) node-identifier)
+	((string? node-identifier)
+	 (first
+	  (filter (lambda (a-node) (string=? node-identifier
+					     (node-name a-node)))
+		  (all-nodes))))))
 
 (define (safe-string a-string)
   (regexp-replace* "[^a-zA-Z0-9_]" a-string "_"))
@@ -117,6 +122,9 @@
       (display (format "Error: definitions file ~a not accepted.~%"
 		       definitions) (current-error-port))))
 
-(provide node-type rule none use output-graph)
+(define-syntax-rule (label object identifier)
+  (define identifier object))
+
+(provide node-type rule none use label output-graph)
 (provide/contract
  (new-section (-> string? any)))

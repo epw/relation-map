@@ -2,9 +2,9 @@
 
 (group "Rebel Alliance")
 
-(character "Luke Skywalker")
+(label (character "Luke Skywalker") luke)
 
-(has-member "Rebel Alliance" "Luke Skywalker")
+(has-member "Rebel Alliance" luke)
 
 (character "Leia Organa")
 
@@ -28,3 +28,5 @@
 (enemies "Leia Organa" "Darth Vader")
 
 (watching "R2D2" "Darth Vader")
+
+(hates luke "Galactic Empire")
