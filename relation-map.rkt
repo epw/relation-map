@@ -62,7 +62,7 @@
 	(output-section a-section)))
   (display "}\n"))
 
-(define url-predicate (make-parameter "nodes/"))
+(define url-predicate (make-parameter ""))
 
 (define (url identifier)
   (format "~a~a.html" (url-predicate) identifier))
