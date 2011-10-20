@@ -12,9 +12,9 @@ then
     output=relationmap.html
 fi
 
-dot -Tcmapx -omap.html -Tpng -omap.png $input
+dot -Tcmapx -omap.html -Tpng -o"${input}map.png" $input
 insertpoint=`grep -n '<!-- INSERT map.html HERE -->' relationgraph.html | awk -F : '{print $1}'`
 head -$insertpoint relationgraph.html > $output
+sed -i "s/\$NAMEmap.png/${input}map.png/" $output
 cat map.html >> $output
-maplength=`wc -l map.html | awk '{print $1}'`
 echo "</body></html>" >> $output
