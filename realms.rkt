@@ -1,3 +1,5 @@
+(rule enchanted orange dashed forward)
+
 (character "Tara")
 
 (new-section "All Pathwalkers")
@@ -10,3 +12,7 @@
 
 (character "Iawen" none)
 (weakly-allied "Ged" "Iawen")
+
+(character "Masks")
+(character "Harlest")
+(enchanted "Masks" "Harlest")

@@ -22,8 +22,8 @@
 (define (draw-relation-map in-file)
   (parameterize ((current-namespace (make-base-empty-namespace)))
     (namespace-require "plot.rkt")
-    (load in-file)))
-
+    (load in-file)
+    (eval '(output-graph))))
 
 (define (main)
   (if (zero? (vector-length (current-command-line-arguments)))

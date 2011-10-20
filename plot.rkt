@@ -2,7 +2,9 @@
 
 (require "relation-map.rkt")
 
-(provide new-section none)
+(provide new-section none output-graph
+	 (rename-out (node-type-no-export node-type))
+	 (rename-out (rule-no-export rule)))
 
 (node-type character box)
 (node-type objective ellipse)
@@ -20,4 +22,4 @@
 (rule owns black solid forward)
 (rule controls orange solid forward)
 
-(provide #%top-interaction #%app #%datum)
+(provide #%top-interaction #%app #%datum #%top)
