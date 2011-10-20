@@ -1,9 +1,3 @@
-#lang racket
-
-(require "relation-map.rkt")
-
-(provide new-section none output-graph node-type rule)
-
 (node-type character box)
 (node-type objective ellipse)
 (node-type item diamond)
@@ -19,7 +13,3 @@
 (rule possesses purple)
 (rule owns black solid forward)
 (rule controls orange solid forward)
-
-(provide (all-defined-out))
-
-(provide #%top-interaction #%app #%datum #%top)

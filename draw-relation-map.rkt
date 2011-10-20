@@ -21,7 +21,7 @@
 
 (define (draw-relation-map in-file)
   (parameterize ((current-namespace (make-base-empty-namespace)))
-    (namespace-require "plot.rkt")
+    (namespace-require "definition-base.rkt")
     (load in-file)
     (eval '(output-graph))))
 

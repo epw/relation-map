@@ -1,3 +1,5 @@
+(use "plot.rkt")
+
 (rule enchanted orange dashed forward)
 
 (character "Tara")

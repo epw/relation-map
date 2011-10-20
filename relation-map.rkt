@@ -107,6 +107,14 @@
      (define (new-type node1 node2)
        (new-edge node1 node2 'color 'style 'dir)))))
 
-(provide node-type rule none output-graph)
+(define dsls (make-parameter (list "plot.rkt")))
+
+(define (use definitions)
+  (if (member definitions (dsls))
+      (load definitions)
+      (display (format "Error: definitions file ~a not accepted.~%"
+		       definitions) (current-error-port))))
+
+(provide node-type rule none use output-graph)
 (provide/contract
  (new-section (-> string? any)))
