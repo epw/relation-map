@@ -19,3 +19,5 @@
 (rule possesses purple)
 (rule owns black solid forward)
 (rule controls orange solid forward)
+
+(provide #%top-interaction #%app)

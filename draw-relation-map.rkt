@@ -20,14 +20,10 @@
 (define-namespace-anchor a)
 
 (define (draw-relation-map in-file)
-  (let ((ns (make-base-empty-namespace)))
-    (namespace-attach-module (namespace-anchor->empty-namespace a)
-			     "relation-map.rkt" ns)
-    (parameterize ((current-namespace ns))
-      (namespace-require racket)
-      (namespace-require "relation-map.rkt")
-      (load in-file))
-    (output-graph)))
+  (parameterize ((current-namespace (make-base-empty-namespace)))
+    (namespace-require "plot.rkt")
+    (load in-file)))
+
 
 (define (main)
   (if (zero? (vector-length (current-command-line-arguments)))
