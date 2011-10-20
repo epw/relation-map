@@ -20,8 +20,13 @@
 (define (write-dot-file in-file)
   (parameterize ((current-namespace (make-base-empty-namespace)))
     (namespace-require "definition-base.rkt")
-    (load in-file)
-    (eval '(output-graph))))
+    (with-handlers ((exn:fail?
+		     (lambda (v)
+		       (display
+			(format "Error in ~a~%~a~%" in-file (exn-message v))
+			(current-error-port)))))
+      (load in-file)
+      (eval '(output-graph)))))
 
 (define (main)
   (if (zero? (vector-length (current-command-line-arguments)))
