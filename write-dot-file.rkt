@@ -17,9 +17,7 @@
 	(get-write-line port out)))
     filename))
 
-(define-namespace-anchor a)
-
-(define (draw-relation-map in-file)
+(define (write-dot-file in-file)
   (parameterize ((current-namespace (make-base-empty-namespace)))
     (namespace-require "definition-base.rkt")
     (load in-file)
@@ -27,7 +25,7 @@
 
 (define (main)
   (if (zero? (vector-length (current-command-line-arguments)))
-      (draw-relation-map (temporary-file-from-port (current-input-port)))
-      (draw-relation-map (vector-ref (current-command-line-arguments) 0))))
+      (write-dot-file (temporary-file-from-port (current-input-port)))
+      (write-dot-file (vector-ref (current-command-line-arguments) 0))))
 
 (main)
