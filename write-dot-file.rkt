@@ -1,11 +1,19 @@
 #! /usr/bin/env racket
 #lang racket/base
+;; Copyright (C) Eric Willisson 2011
+;; This library uses the GNU GPL v3.0 or greater
+;; see http://www.gnu.org/copyleft/gpl.html for details
+
+;; This module is an executable script which performs the main
+;; transformation. It loads all of the other pieces, and then reads a
+;; given file (or from stdin) to generate a Graphviz file. Namespaces
+;; are used to allow the file it reads to be from any source, without
+;; leaving security holes open.
+
 (require racket/cmdline)
 
 (require "relation-map.rkt")
 (require "definition-base.rkt")
-
-
 
 (define (get-write-line in out)
   (let ((line (read-line in)))
@@ -21,18 +29,7 @@
 	(get-write-line port out)))
     filename))
 
-(define allowed-definitions (list))
-
-(define (include-definitions definitions)
-  (if (directory-exists? definitions)
-      (set! allowed-definitions (append (map (lambda (path)
-					       (format "~a/~a" definitions
-						       (path->string path)))
-					     (directory-list definitions))))
-      (set! allowed-definitions (cons definitions allowed-definitions))))
-
-(define (get-definitions)
-  allowed-definitions)
+(define default-definitions (make-parameter '()))
 
 (define (write-dot-file in-file)
   (let ((ns (make-base-empty-namespace)))
@@ -44,6 +41,8 @@
 			 (display
 			  (format "Error in ~a:~%\t~a~%" in-file (exn-message v))
 			  (current-error-port)))))
+	(for ((def (default-definitions)))
+	     (eval `(use ,def)))
 	(load in-file)
 	(eval '(output-graph))))))
 
@@ -57,9 +56,12 @@
 	  #:multi
 	  (("-d" "--definitions") path "Definition file or directory available to maps"
 	   (allow-definitions path))
-	  #:args (filearg)
+	  (("-D" "--default-definitions") path "Definition file to be automatically used in maps"
+	   (default-definitions (cons path (default-definitions))))
+	  #:args ((filearg "-"))
 	  filearg)))
-;      (write-dot-file (temporary-file-from-port (current-input-port)))
-    (write-dot-file filename)))
+    (if (string=? filename "-")
+	(write-dot-file (temporary-file-from-port (current-input-port)))
+	(write-dot-file filename))))
 
 (main)

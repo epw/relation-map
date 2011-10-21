@@ -1,4 +1,15 @@
 #lang racket/base
+;; Copyright (C) Eric Willisson 2011
+;; This library uses the GNU GPL v3.0 or greater
+;; see http://www.gnu.org/copyleft/gpl.html for details
+
+;; This module provides the actual functions and macros which write
+;; out Graphviz files. It defines the data structures that represent
+;; the entire graph, clusters, nodes, and edges, and how to display
+;; them. It also defines macros to create new nodes and edges with
+;; default values. Finally, it handles adding to the definitions which
+;; are allowed to be imported by individual graph files.
+
 (require racket/list)
 (require racket/contract)
 (require racket/path)
@@ -12,16 +23,16 @@
 
 (struct section (name (nodes #:mutable) (edges #:mutable)))
 
+(define (new-node name shape (place (first (graph))))
+  (let ((the-node (node name shape)))
+    (set-section-nodes! place (cons the-node (section-nodes place)))
+    the-node))
+
 (define (get-none) (last (graph)))
 (define-syntax none
   (syntax-id-rules ()
 		   ((none a ...) ((get-none) a ...))
 		   (none (get-none))))
-
-(define (new-node name shape (place (first (graph))))
-  (let ((the-node (node name shape)))
-    (set-section-nodes! place (cons the-node (section-nodes place)))
-    the-node))
 
 (define (new-edge node1 node2 color style (dir null))
   (let ((the-edge (edge (get-node node1) (get-node node2) color style
