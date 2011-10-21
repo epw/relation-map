@@ -19,7 +19,7 @@
 (allies "C3PO" "Luke Skywalker")
 (allies "R2D2" "Luke Skywalker")
 
-(new-section "Emperor's Control")
+(label (new-section "Emperor's Control") empire)
 
 (group "Galactic Empire")
 
@@ -32,3 +32,9 @@
 (watching "R2D2" "Darth Vader")
 
 (hates luke "Galactic Empire")
+
+(new-section "Hutts")
+
+(character "Jabba the")
+
+(character "Boba Fett" "Emperor's Control")

@@ -30,7 +30,9 @@
     the-edge))
 
 (define (new-section name)
-  (graph (cons (section name empty empty) (graph))))
+  (let ((the-section (section name empty empty)))
+    (graph (cons the-section (graph)))
+    the-section))
 
 (define (new-graph) 
   (list (section null empty empty)))
@@ -51,6 +53,17 @@
 	  (filter (lambda (a-node) (string=? node-identifier
 					     (node-name a-node)))
 		  (all-nodes))))))
+
+(define (get-section section-identifier)
+  (cond ((section? section-identifier) section-identifier)
+	((string? section-identifier)
+	 (let ((found
+		(filter (lambda (a-section)
+			  (if (null? (section-name a-section)) #f
+			      (string=? section-identifier
+					(section-name a-section))))
+			(graph))))
+	   (if (eq? found empty) none (first found))))))
 
 (define (safe-string a-string)
   (regexp-replace* "[^a-zA-Z0-9_]" a-string "_"))
@@ -106,7 +119,7 @@
 
 (define-syntax-rule (node-type new-type shape)
   (define (new-type name (place (first (graph))))
-    (new-node name 'shape place)))
+    (new-node name 'shape (get-section place))))
 
 (define-syntax rule
   (syntax-rules ()
