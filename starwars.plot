@@ -30,3 +30,5 @@
 (watching "R2D2" "Darth Vader")
 
 (hates luke "Galactic Empire")
+
+(url-predicate "")

@@ -3,6 +3,7 @@
 (require racket/cmdline)
 
 (require "relation-map.rkt")
+(require "definition-base.rkt")
 
 (define (get-write-line in out)
   (let ((line (read-line in)))
@@ -31,18 +32,24 @@
 (define (get-definitions)
   allowed-definitions)
 
+(define-namespace-anchor a)
+
 (define (write-dot-file in-file)
-  (parameterize ((current-namespace (make-base-empty-namespace)))
-    (namespace-require "definition-base.rkt")
-    (eval `(allow-definitions* ,@(get-definitions)))
-    (eval `(url-predicate ,(url-predicate)))
-    (with-handlers ((exn:fail?
-		     (lambda (v)
-		       (display
-			(format "Error in ~a:~%\t~a~%" in-file (exn-message v))
-			(current-error-port)))))
-      (load in-file)
-      (eval '(output-graph)))))
+  (let ((ns (make-base-empty-namespace)))
+    (namespace-attach-module (namespace-anchor->empty-namespace a)
+			     "definition-base.rkt" ns)
+    (parameterize ((current-namespace ns))
+					;    (namespace-require "definition-base.rkt")
+      (apply allow-definitions* (get-definitions))
+;      (eval `(allow-definitions* ,@(get-definitions)))
+;      (eval `(url-predicate ,(url-predicate)))
+      (with-handlers ((exn:fail?
+		       (lambda (v)
+			 (display
+			  (format "Error in ~a:~%\t~a~%" in-file (exn-message v))
+			  (current-error-port)))))
+	(load in-file)
+	(eval '(output-graph))))))
 
 (define (main)
   (let ((filename
