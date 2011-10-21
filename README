@@ -1,0 +1,4 @@
+This program implements a domain-specific language for writing graphs,
+or "relationship maps." It uses Graphviz to render the actual images,
+but provides a less repetitive syntax.
+

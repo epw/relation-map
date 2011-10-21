@@ -160,8 +160,8 @@
 					 (string->path def)))))
 		      (definition-files))))
       (load definitions)
-      (display (format "Error: definitions file ~a not accepted.~%(list is ~a)~%"
-		       definitions (definition-files)) (current-error-port))))
+      (display (format "Error: definitions file ~a not accepted.~%"
+		       definitions) (current-error-port))))
 
 (define-syntax-rule (label object identifier)
   (define identifier object))
