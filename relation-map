@@ -3,7 +3,9 @@
 # This library uses the GNU GPL v3.0 or greater
 # see http://www.gnu.org/copyleft/gpl.html for details
 
+RELATION_MAP_HOME=$HOME/projects
+
 (
-	cd $HOME/projects/relation-map
+	cd $RELATION_MAP_HOME/relation-map
 	bash relation-map.sh $*
 )

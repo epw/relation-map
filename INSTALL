@@ -1,0 +1,8 @@
+This program requires that you have Racket (http://racket-lang.org)
+and Graphviz (http://www.graphviz.org/) installed. It also assumes a
+standard, POSIX-compliant environment.
+
+To install, put the relation-map/ directory somewhere useful, and edit
+the file "relation-map" so that the RELATION_MAP_HOME variable is set
+to the location of relation-map/. Then, you can copy the relation-map
+script to anywhere on your system.
