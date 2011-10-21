@@ -21,6 +21,13 @@ is run. As a result, it should  be safe to make outward-facing
 interface which accept map files without worrying about the security
 of the system being compromised.
 
+Once a map has been created, it can be rendered with render-map. At
+least one definition file will almost certainly need to be included
+with the -d option. Running the program will generate a PNG image, an
+HTML page with the image as an imagemap, and HTML files corresponding
+to each of the nodes defined in the map. Viewing the main HTML file
+will allow the other nodes to be visited as links.
+
 The definition files use the following two functions, which are also
 available from within map files (allowing custom node types and rules
 to be created).
