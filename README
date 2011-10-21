@@ -2,3 +2,84 @@ This program implements a domain-specific language for writing graphs,
 or "relationship maps." It uses Graphviz to render the actual images,
 but provides a less repetitive syntax.
 
+There are two parts to creating a relation map. The first is including
+one or more definition files. An example, "plot.def", is
+provided. These files can be included one by one with the -d flag to
+relation-map, or can be included as a group by passing a directory to
+-d. In this case, all files in the directory will be able to be
+loaded.
+
+The section part of the map is the file defining the map itself. The
+example file starwars.plot is provided to demonstrate how one is
+written. Normally, a map file must "use" a definition file to make use
+of the definitions in it. However, this can be overridden with the -D
+flag, which includes the given file by default.
+
+The map files are entirely insulated from the rest of the system, and
+can only include definition files explicitly allowed when the program
+is run. As a result, it should  be safe to make outward-facing
+interface which accept map files without worrying about the security
+of the system being compromised.
+
+The definition files use the following two functions, which are also
+available from within map files (allowing custom node types and rules
+to be created).
+
+(node-type name shape)
+
+This function creates a new node definition which can be used in the
+map file. The definition is named "name", and the node will appear in
+the shape specified. Legal shapes are defined at
+http://www.graphviz.org/doc/info/shapes.html
+
+(rule name color [style] [forward])
+This function creates a new rule, or edge definition. Like
+(node-type), its name is "name", but it is then followed by a
+mandatory color argument. The color should be a color name from this
+page: http://www.graphviz.org/doc/info/colors.html
+
+style defaults to "solid", and can be any of:
+"dashed", "dotted", "solid", "invis", "bold", and "tapered"
+
+forward is literally the word "forward", and makes an edge have an
+arrow.
+
+Map files additionally provide the following functions:
+
+(use "definition")
+
+This informs the renderer to load the definitions fom the given
+file. Directories are unnecessary, so a definition file named
+"plot.def" can be referred to as such even if it is in the directory
+"defs/".
+
+(label <thing> name)
+
+This gives a section or node the shortened name "name" for the rest of
+the map. It allows nodes to have long, descriptive names without
+having to retype them every time they are referenced by other nodes.
+
+(new-section "name")
+
+This creates a light gray box around all nodes between it and the next
+(new-section) line. Nodes can also explicitly appear in the box by
+putting its name (or a label, if one is provided) at the end of their
+definition.
+
+Nodes created with node-type are used with the following syntax.
+
+(node-name "name" [section])
+
+node-name is "name" from a node-type definition. name is the string
+displayed in the node when the map is rendered. Finally, the optional
+section argument is the name of a section, either the full string or a
+label. Nodes appear in the most recent section defined by
+default. section can also be "none" to make a node not part of any
+sections after the first one has been defined.
+
+Rules from a rule definition have the following syntax.
+
+(rule-name node1 node2)
+
+rule-name is the "name" from a rule definition. node1 and node2 are
+either strings or labels corresponding to existing nodes.

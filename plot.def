@@ -1,3 +1,5 @@
+;; Example definition file. ; is used to desginate a comment.
+
 (node-type character box)
 (node-type objective ellipse)
 (node-type item diamond)
