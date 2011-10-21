@@ -7,6 +7,8 @@
 # PNG image and creates the HTML page using that image as an
 # imagemap.
 
+source $HOME/.config/relation-map/config.rc
+
 input=$1
 if [ -z $input ]
 then

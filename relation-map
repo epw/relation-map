@@ -17,7 +17,7 @@
 # The README file included with the distribution explains the
 # domain-specific language used to make relationship maps.
 
-source $HOME/.config/relation-map/config.sh
+source $HOME/.config/relation-map/config.rc
 
 function last () {
     in_switch=2
