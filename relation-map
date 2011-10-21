@@ -1,4 +1,20 @@
 #! /bin/bash
+# Copyright (C) Eric Willisson 2011
+# This library uses the GNU GPL v3.0 or greater
+# see http://www.gnu.org/copyleft/gpl.html for details
+
+# This is the actual program. It passes all of its arguments to
+# write-dot-file.rkt, and then calls maphtml.sh on the resulting
+# Graphviz file. It then examines the Graphviz file and writes out the
+# files linked to by the imagemap for the graph's nodes. It does not
+# write over existing HTML files, but creates ones that do not yet
+# exist.
+
+# The program abides by the Unix philosophy, and can take the main
+# file as the final argument or from stdin.
+
+# The README file included with the distribution explains the
+# domain-specific language used to make relationship maps.
 
 function last () {
     arg=

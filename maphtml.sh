@@ -1,4 +1,11 @@
 #! /bin/bash
+# Copyright (C) Eric Willisson 2011
+# This library uses the GNU GPL v3.0 or greater
+# see http://www.gnu.org/copyleft/gpl.html for details
+
+# This script takes a Graphviz file and writes out the corresponding
+# PNG image and creates the HTML page using that image as an
+# imagemap.
 
 input=$1
 if [ -z $input ]
