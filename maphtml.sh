@@ -20,8 +20,8 @@ then
 fi
 
 dot -Tcmapx -omap.html -Tpng -o"${input}map.png" $input
-insertpoint=`grep -n '<!-- INSERT map.html HERE -->' relationgraph.html | awk -F : '{print $1}'`
-head -$insertpoint relationgraph.html > $output
+insertpoint=`grep -n '<!-- INSERT map.html HERE -->' $RELATION_MAP_HOME/relationgraph.html | awk -F : '{print $1}'`
+head -$insertpoint $RELATION_MAP_HOME/relationgraph.html > $output
 sed -i "s/\$NAMEmap.png/${input}map.png/" $output
 cat map.html >> $output
 echo "</body></html>" >> $output

@@ -31,6 +31,8 @@
 
 (define default-definitions (make-parameter '()))
 
+(define map-dir "")
+
 (define (write-dot-file in-file)
   (let ((ns (make-base-empty-namespace)))
     (namespace-attach-module (current-namespace) "definition-base.rkt" ns)
@@ -43,7 +45,7 @@
 			  (current-error-port)))))
 	(for ((def (default-definitions)))
 	     (eval `(use ,def)))
-	(load in-file)
+	(load (format "~a~a" map-dir in-file))
 	(eval '(output-graph))))))
 
 (define (main)
@@ -51,6 +53,8 @@
 	 (command-line
 	  #:program "write-dot-file.rkt"
 	  #:once-each
+	  (("--at") dir "Directory to find map file in."
+	   (set! map-dir (format "~a/" dir)))
 	  (("-u" "--url") pred "URL prefix string for node links in image map"
 	   (url-predicate pred))
 	  #:multi
