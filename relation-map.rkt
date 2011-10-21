@@ -4,6 +4,7 @@
 (require racket/path)
 
 (require "indent.rkt")
+(require "parameters.rkt")
 
 (struct node (name shape))
 
@@ -62,8 +63,6 @@
 	(output-section a-section)))
   (display "}\n"))
 
-(define url-predicate (make-parameter ""))
-
 (define (url identifier)
   (format "~a~a.html" (url-predicate) identifier))
 
@@ -117,8 +116,6 @@
      (define (new-type node1 node2)
        (new-edge node1 node2 'color 'style 'dir)))))
 
-(define definition-files (make-parameter empty))
-
 (define (allow-definitions definitions)
   (if (directory-exists? definitions)
       (definition-files (append (map (lambda (path)
@@ -139,8 +136,8 @@
 					 (string->path def)))))
 		      (definition-files))))
       (load definitions)
-      (display (format "Error: definitions file ~a not accepted.~%"
-		       definitions) (current-error-port))))
+      (display (format "Error: definitions file ~a not accepted.~%(list is ~a)~%"
+		       definitions (definition-files)) (current-error-port))))
 
 (define-syntax-rule (label object identifier)
   (define identifier object))

@@ -19,6 +19,8 @@
 (allies "C3PO" "Luke Skywalker")
 (allies "R2D2" "Luke Skywalker")
 
+(new-section "Emperor's Control")
+
 (group "Galactic Empire")
 
 (character "Darth Vader")

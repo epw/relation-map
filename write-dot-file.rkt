@@ -3,6 +3,9 @@
 (require racket/cmdline)
 
 (require "relation-map.rkt")
+(require "definition-base.rkt")
+
+
 
 (define (get-write-line in out)
   (let ((line (read-line in)))
@@ -32,17 +35,17 @@
   allowed-definitions)
 
 (define (write-dot-file in-file)
-  (parameterize ((current-namespace (make-base-empty-namespace)))
-    (namespace-require "definition-base.rkt")
-    (eval `(allow-definitions* ,@(get-definitions)))
-    (eval `(url-predicate ,(url-predicate)))
-    (with-handlers ((exn:fail?
-		     (lambda (v)
-		       (display
-			(format "Error in ~a:~%\t~a~%" in-file (exn-message v))
-			(current-error-port)))))
-      (load in-file)
-      (eval '(output-graph)))))
+  (let ((ns (make-base-empty-namespace)))
+    (namespace-attach-module (current-namespace) "definition-base.rkt" ns)
+    (parameterize ((current-namespace ns))
+      (namespace-require "definition-base.rkt")
+      (with-handlers ((exn:fail?
+		       (lambda (v)
+			 (display
+			  (format "Error in ~a:~%\t~a~%" in-file (exn-message v))
+			  (current-error-port)))))
+	(load in-file)
+	(eval '(output-graph))))))
 
 (define (main)
   (let ((filename
@@ -52,10 +55,8 @@
 	  (("-u" "--url") pred "URL prefix string for node links in image map"
 	   (url-predicate pred))
 	  #:multi
-	  (("-f" "--definition-file") path "Definition file available to maps"
-	   (include-definitions path))
-	  (("-d" "--definition-dir") dir-path "Directory of definition files available to maps"
-	   (include-definitions dir-path))
+	  (("-d" "--definitions") path "Definition file or directory available to maps"
+	   (allow-definitions path))
 	  #:args (filearg)
 	  filearg)))
 ;      (write-dot-file (temporary-file-from-port (current-input-port)))
