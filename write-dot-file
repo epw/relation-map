@@ -1,0 +1,8 @@
+#! /bin/bash
+
+source $HOME/.config/relation-map/config.rc
+
+(
+    cd $RELATION_MAP_HOME
+    ./write-dot-file.rkt $*
+)

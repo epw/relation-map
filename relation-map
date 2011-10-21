@@ -51,7 +51,12 @@ at=`pwd`
 
 (
     cd $RELATION_MAP_HOME
-    write-dot-file.rkt --at $at $* > $at/$file.dot
+    if [ `echo $file | grep '^/'` ]
+    then
+	write-dot-file.rkt --at $at $* > $file.dot
+    else
+	write-dot-file.rkt --at $at $* > $at/$file.dot
+    fi
 )
 
 $RELATION_MAP_HOME/maphtml.sh $file.dot $file.html

@@ -33,6 +33,11 @@
 
 (define map-dir "")
 
+(define (full-filename in-file)
+  (if (char=? (string-ref in-file 0) #\/)
+      in-file
+      (format "~a~a" map-dir in-file)))
+
 (define (write-dot-file in-file)
   (let ((ns (make-base-empty-namespace)))
     (namespace-attach-module (current-namespace) "definition-base.rkt" ns)
@@ -45,7 +50,7 @@
 			  (current-error-port)))))
 	(for ((def (default-definitions)))
 	     (eval `(use ,def)))
-	(load (format "~a~a" map-dir in-file))
+	(load (full-filename in-file))
 	(eval '(output-graph))))))
 
 (define (main)
