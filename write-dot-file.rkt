@@ -1,5 +1,15 @@
 #! /usr/bin/env racket
 #lang racket/base
+;; Copyright (C) Eric Willisson 2011
+;; This library uses the GNU GPL v3.0 or greater
+;; see http://www.gnu.org/copyleft/gpl.html for details
+
+;; This module is an executable script which performs the main
+;; transformation. It loads all of the other pieces, and then reads a
+;; given file (or from stdin) to generate a Graphviz file. Namespaces
+;; are used to allow the file it reads to be from any source, without
+;; leaving security holes open.
+
 (require racket/cmdline)
 
 (require "relation-map.rkt")
@@ -19,30 +29,22 @@
 	(get-write-line port out)))
     filename))
 
-(define allowed-definitions (list))
+(define default-definitions (make-parameter '()))
 
-(define (include-definitions definitions)
-  (if (directory-exists? definitions)
-      (set! allowed-definitions (append (map (lambda (path)
-					       (format "~a/~a" definitions
-						       (path->string path)))
-					     (directory-list definitions))))
-      (set! allowed-definitions (cons definitions allowed-definitions))))
+(define map-dir "")
 
-(define (get-definitions)
-  allowed-definitions)
+(define (full-filename in-file)
+  (if (char=? (string-ref in-file 0) #\/)
+      in-file
+      (format "~a~a" map-dir in-file)))
 
 (define-namespace-anchor a)
 
 (define (write-dot-file in-file)
   (let ((ns (make-base-empty-namespace)))
-    (namespace-attach-module (namespace-anchor->empty-namespace a)
-			     "definition-base.rkt" ns)
+    (namespace-attach-module (current-namespace) "definition-base.rkt" ns)
     (parameterize ((current-namespace ns))
-					;    (namespace-require "definition-base.rkt")
-      (apply allow-definitions* (get-definitions))
-;      (eval `(allow-definitions* ,@(get-definitions)))
-;      (eval `(url-predicate ,(url-predicate)))
+      (namespace-require "definition-base.rkt")
       (with-handlers ((exn:fail?
 		       (lambda (v)
 			 (display
@@ -56,16 +58,19 @@
 	 (command-line
 	  #:program "write-dot-file.rkt"
 	  #:once-each
+	  (("--at") dir "Directory to find map file in."
+	   (set! map-dir (format "~a/" dir)))
 	  (("-u" "--url") pred "URL prefix string for node links in image map"
 	   (url-predicate pred))
 	  #:multi
-	  (("-f" "--definition-file") path "Definition file available to maps"
-	   (include-definitions path))
-	  (("-d" "--definition-dir") dir-path "Directory of definition files available to maps"
-	   (include-definitions dir-path))
-	  #:args (filearg)
+	  (("-d" "--definitions") path "Definition file or directory available to maps"
+	   (allow-definitions path))
+	  (("-D" "--default-definitions") path "Definition file to be automatically used in maps"
+	   (default-definitions (cons path (default-definitions))))
+	  #:args ((filearg "-"))
 	  filearg)))
-;      (write-dot-file (temporary-file-from-port (current-input-port)))
-    (write-dot-file filename)))
+    (if (string=? filename "-")
+	(write-dot-file (temporary-file-from-port (current-input-port)))
+	(write-dot-file filename))))
 
 (main)

@@ -1,9 +1,21 @@
 #lang racket/base
+;; Copyright (C) Eric Willisson 2011
+;; This library uses the GNU GPL v3.0 or greater
+;; see http://www.gnu.org/copyleft/gpl.html for details
+
+;; This module provides the actual functions and macros which write
+;; out Graphviz files. It defines the data structures that represent
+;; the entire graph, clusters, nodes, and edges, and how to display
+;; them. It also defines macros to create new nodes and edges with
+;; default values. Finally, it handles adding to the definitions which
+;; are allowed to be imported by individual graph files.
+
 (require racket/list)
 (require racket/contract)
 (require racket/path)
 
 (require "indent.rkt")
+(require "parameters.rkt")
 
 (struct node (name shape))
 
@@ -11,16 +23,16 @@
 
 (struct section (name (nodes #:mutable) (edges #:mutable)))
 
+(define (new-node name shape (place (first (graph))))
+  (let ((the-node (node name shape)))
+    (set-section-nodes! place (cons the-node (section-nodes place)))
+    the-node))
+
 (define (get-none) (last (graph)))
 (define-syntax none
   (syntax-id-rules ()
 		   ((none a ...) ((get-none) a ...))
 		   (none (get-none))))
-
-(define (new-node name shape (place (first (graph))))
-  (let ((the-node (node name shape)))
-    (set-section-nodes! place (cons the-node (section-nodes place)))
-    the-node))
 
 (define (new-edge node1 node2 color style (dir null))
   (let ((the-edge (edge (get-node node1) (get-node node2) color style
@@ -29,7 +41,9 @@
     the-edge))
 
 (define (new-section name)
-  (graph (cons (section name empty empty) (graph))))
+  (let ((the-section (section name empty empty)))
+    (graph (cons the-section (graph)))
+    the-section))
 
 (define (new-graph) 
   (list (section null empty empty)))
@@ -51,6 +65,17 @@
 					     (node-name a-node)))
 		  (all-nodes))))))
 
+(define (get-section section-identifier)
+  (cond ((section? section-identifier) section-identifier)
+	((string? section-identifier)
+	 (let ((found
+		(filter (lambda (a-section)
+			  (if (null? (section-name a-section)) #f
+			      (string=? section-identifier
+					(section-name a-section))))
+			(graph))))
+	   (if (eq? found empty) none (first found))))))
+
 (define (safe-string a-string)
   (regexp-replace* "[^a-zA-Z0-9_]" a-string "_"))
 
@@ -61,8 +86,6 @@
    (for ((a-section (graph)))
 	(output-section a-section)))
   (display "}\n"))
-
-(define url-predicate (make-parameter ""))
 
 (define (url identifier)
   (format "~a~a.html" (url-predicate) identifier))
@@ -107,7 +130,7 @@
 
 (define-syntax-rule (node-type new-type shape)
   (define (new-type name (place (first (graph))))
-    (new-node name 'shape place)))
+    (new-node name 'shape (get-section place))))
 
 (define-syntax rule
   (syntax-rules ()
@@ -116,8 +139,6 @@
     ((rule new-type color style dir)
      (define (new-type node1 node2)
        (new-edge node1 node2 'color 'style 'dir)))))
-
-(define definition-files (make-parameter empty))
 
 (define (allow-definitions definitions)
   (if (directory-exists? definitions)

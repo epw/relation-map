@@ -1,5 +1,8 @@
 (use "plot.def")
 
+(node-type droid trapezium)
+(rule uses-force-on orange solid forward)
+
 (group "Rebel Alliance")
 
 (label (character "Luke Skywalker") luke)
@@ -10,8 +13,8 @@
 
 (has-member "Rebel Alliance" "Leia Organa")
 
-(character "C3PO")
-(character "R2D2")
+(droid "C3PO")
+(droid "R2D2")
 
 (owns "Leia Organa" "C3PO")
 (owns "Leia Organa" "R2D2")
@@ -31,4 +34,14 @@
 
 (hates luke "Galactic Empire")
 
-(url-predicate "")
+(new-section "Hutt Space")
+
+(character "Jabba the Hutt")
+
+(character "Boba Fett")
+
+(character "Han Solo")
+
+(allies "Han Solo" luke)
+
+(uses-force-on "Darth Vader" luke)
