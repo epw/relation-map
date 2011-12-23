@@ -1,0 +1,6 @@
+digraph G {
+	"(main)" [shape=diamond];
+	"(main)" -> "(write-dot-file)" -> "(output-graph)";
+	"definition-base.rkt" -> "(write-dot-file)";
+	"(main)" -> "in-file" -> "(write-dot-file)";
+}

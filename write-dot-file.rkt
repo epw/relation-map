@@ -31,13 +31,6 @@
 
 (define default-definitions (make-parameter '()))
 
-(define map-dir "")
-
-(define (full-filename in-file)
-  (if (char=? (string-ref in-file 0) #\/)
-      in-file
-      (format "~a~a" map-dir in-file)))
-
 (define-namespace-anchor a)
 
 (define (write-dot-file in-file)
@@ -50,6 +43,8 @@
 			 (display
 			  (format "Error in ~a:~%\t~a~%" in-file (exn-message v))
 			  (current-error-port)))))
+	(for ((def (default-definitions)))
+	     (eval `(use ,def)))
 	(load in-file)
 	(eval '(output-graph))))))
 
@@ -58,14 +53,13 @@
 	 (command-line
 	  #:program "write-dot-file.rkt"
 	  #:once-each
-	  (("--at") dir "Directory to find map file in."
-	   (set! map-dir (format "~a/" dir)))
 	  (("-u" "--url") pred "URL prefix string for node links in image map"
 	   (url-predicate pred))
 	  #:multi
 	  (("-d" "--definitions") path "Definition file or directory available to maps"
 	   (allow-definitions path))
 	  (("-D" "--default-definitions") path "Definition file to be automatically used in maps"
+	   (allow-definitions path)
 	   (default-definitions (cons path (default-definitions))))
 	  #:args ((filearg "-"))
 	  filearg)))
@@ -73,4 +67,4 @@
 	(write-dot-file (temporary-file-from-port (current-input-port)))
 	(write-dot-file filename))))
 
-(main)
+(provide main)
