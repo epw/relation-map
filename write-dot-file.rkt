@@ -10,10 +10,11 @@
 ;; are used to allow the file it reads to be from any source, without
 ;; leaving security holes open.
 
-(require racket/cmdline)
+(require racket/cmdline
+	 racket/file)
 
-(require "output-graph.rkt")
-(require "definition-base.rkt")
+(require "output-graph.rkt"
+	 "definition-base.rkt")
 
 (define (get-write-line in out)
   (let ((line (read-line in)))
@@ -22,8 +23,10 @@
       (display "\n" out)
       (get-write-line in out))))
 
+(define output-filename (make-parameter ""))
+
 (define (temporary-file-from-port port)
-  (let ((filename (format "/tmp/racket-~a" (current-milliseconds))))
+  (let ((filename (make-temporary-file)))
     (call-with-output-file filename
       (lambda (out)
 	(get-write-line port out)))
@@ -65,6 +68,9 @@
 	  filearg)))
     (if (string=? filename "-")
 	(write-dot-file (temporary-file-from-port (current-input-port)))
-	(write-dot-file filename))))
+	(begin
+	  (output-filename filename)
+	  (write-dot-file filename)))))
 
-(provide main)
+(provide main
+	 output-filename)
