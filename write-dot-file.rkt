@@ -12,7 +12,7 @@
 
 (require racket/cmdline)
 
-(require "relation-map.rkt")
+(require "output-graph.rkt")
 (require "definition-base.rkt")
 
 (define (get-write-line in out)

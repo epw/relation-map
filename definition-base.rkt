@@ -7,7 +7,7 @@
 ;; relation maps. It ensures that only a few functions are available
 ;; for the file which is directly (load)ed, preventing security holes.
 
-(require "relation-map.rkt")
+(require "output-graph.rkt")
 
 (provide #%top-interaction #%app #%datum #%top quasiquote)
 
