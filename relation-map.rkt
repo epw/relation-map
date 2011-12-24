@@ -8,6 +8,8 @@
 
 (require (prefix-in write-dot-file: "write-dot-file.rkt"))
 
+(define create-files (make-parameter #f))
+
 (define (dot-path-with-suffix path suffix)
   (path->string (path-replace-suffix path suffix)))
 
@@ -38,6 +40,9 @@
       (close-input-port p-stderr))
     map-string))
 
+(define (maybe-create-files xexpr)
+  
+
 (define (make-map-page out-port name map-string)
   (display-xml/content (xexpr->xml
 			`(html
@@ -48,7 +53,7 @@
 			  (body
 			   (img ((src ,(dot-path-with-suffix name "map.png"))
 				 (border "0") (usemap "#G")))
-			   ,(string->xexpr map-string))))
+			   ,(maybe-create-files (string->xexpr map-string)))))
 		       out-port))
 
 (define (render-dot-file dot-path dot-string)
@@ -63,6 +68,11 @@
     (get-output-string out)))
 
 (define (main)
+  (command-line
+   #:program "relation-map.rkt"
+   #:once-each
+   (("-c" "--create") "Create files referenced in node links."
+    (create-files #t)))
   (parameterize ((current-output-port (open-output-string)))
     (write-dot-file:main)
     (if (string=? (write-dot-file:output-filename) "")

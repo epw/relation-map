@@ -25,6 +25,7 @@
       (get-write-line in out))))
 
 (define output-filename (make-parameter ""))
+(define default-definitions (make-parameter '()))
 
 (define (temporary-file-from-port port)
   (let ((filename (make-temporary-file)))
@@ -33,8 +34,6 @@
 	(get-write-line port out))
       #:exists 'truncate)
     filename))
-
-(define default-definitions (make-parameter '()))
 
 (define-namespace-anchor a)
 
