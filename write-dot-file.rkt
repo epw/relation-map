@@ -11,7 +11,8 @@
 ;; leaving security holes open.
 
 (require racket/cmdline
-	 racket/file)
+	 racket/file
+	 racket/contract)
 
 (require "output-graph.rkt"
 	 "definition-base.rkt")
@@ -29,7 +30,8 @@
   (let ((filename (make-temporary-file)))
     (call-with-output-file filename
       (lambda (out)
-	(get-write-line port out)))
+	(get-write-line port out))
+      #:exists 'truncate)
     filename))
 
 (define default-definitions (make-parameter '()))
@@ -72,5 +74,7 @@
 	  (output-filename filename)
 	  (write-dot-file filename)))))
 
-(provide main
-	 output-filename)
+(provide/contract
+ (main (-> any))
+ (write-dot-file (-> string? any))
+ (output-filename (->* () (string?) string?)))

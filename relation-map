@@ -2,4 +2,6 @@
 #lang racket/base
 
 (require "relation-map.rkt")
-(main)
+(display (main))
+(newline)
+
