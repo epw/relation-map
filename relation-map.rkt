@@ -41,7 +41,10 @@
     map-string))
 
 (define (maybe-create-files xexpr)
-  
+  "Something like this.")
+;  (for/list ((area (cdddr (string->xexpr (port->string (open-input-file "map.html"))))))
+;		   (when (list? area)
+;		     (cdadr area)))
 
 (define (make-map-page out-port name map-string)
   (display-xml/content (xexpr->xml
