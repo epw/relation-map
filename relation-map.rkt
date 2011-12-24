@@ -11,14 +11,6 @@
 (define (dot-path-with-suffix path suffix)
   (path->string (path-replace-suffix path suffix)))
 
-;; (define (dot-file->map dot-path dot-string)
-;;   (let-values (((p-stdout p-stdin pid p-stderr control)
-;; 		(apply values (process (format "dot -Tpng -o ~a -Tcmapx"
-;; 					       (dot-path-with-suffix dot-path
-;; 								     "map.png")
-;; 					       dot-path)))))
-;;     (port->string p-stdout)))
-
 (define (print-and-return s)
   (display (format "~a~%" s) (current-error-port))
   s)
@@ -54,9 +46,9 @@
 			   (link ((rel "stylesheet") (type "text/css")
 				  (href "style.css"))))
 			  (body
-			   (img ((src ,(dot-path-with-suffix name ".png"))
-				 (border "0") (usename "#G")))
-			   ,map-string)))
+			   (img ((src ,(dot-path-with-suffix name "map.png"))
+				 (border "0") (usemap "#G")))
+			   ,(string->xexpr map-string))))
 		       out-port))
 
 (define (render-dot-file dot-path dot-string)
