@@ -124,7 +124,6 @@
 			   (get-output-string (current-output-port)))))))
 
 (provide/contract
-; (dot-file->map (-> string? string?))
  (dot-string->map (-> string? string?))
  (make-map-page (-> output-port? string? string? any))
  (render-dot-file (-> string? string? string?))
