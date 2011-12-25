@@ -16,4 +16,6 @@
 
 (define definition-files (make-parameter null))
 
-(provide url-predicate definition-files)
+(define default-definitions (make-parameter '()))
+
+(provide url-predicate definition-files default-definitions)

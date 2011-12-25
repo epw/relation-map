@@ -15,6 +15,7 @@
 	 racket/contract)
 
 (require "output-graph.rkt"
+	 "parameters.rkt"
 	 "definition-base.rkt")
 
 (define (get-write-line in out)
@@ -25,7 +26,6 @@
       (get-write-line in out))))
 
 (define output-filename (make-parameter ""))
-(define default-definitions (make-parameter '()))
 
 (define (temporary-file-from-port port)
   (let ((filename (make-temporary-file)))
@@ -52,28 +52,50 @@
 	(load in-file)
 	(eval '(output-graph))))))
 
-(define (main)
-  (let ((filename
-	 (command-line
-	  #:program "write-dot-file.rkt"
-	  #:once-each
-	  (("-u" "--url") pred "URL prefix string for node links in image map"
-	   (url-predicate pred))
-	  #:multi
-	  (("-d" "--definitions") path "Definition file or directory available to maps"
-	   (allow-definitions path))
-	  (("-D" "--default-definitions") path "Definition file to be automatically used in maps"
-	   (allow-definitions path)
-	   (default-definitions (cons path (default-definitions))))
-	  #:args ((filearg "-"))
-	  filearg)))
-    (if (string=? filename "-")
-	(write-dot-file (temporary-file-from-port (current-input-port)))
-	(begin
-	  (output-filename filename)
-	  (write-dot-file filename)))))
+(define main
+  (case-lambda
+    (()
+     (let ((filename
+	    (command-line
+	     #:program "write-dot-file.rkt"
+	     #:once-each
+	     (("-p" "--pred") pred "URL prefix string for node links in image map"
+	      (url-predicate pred))
+	     #:multi
+	     (("-d" "--definitions") path "Definition file or directory available to maps"
+	      (allow-definitions path))
+	     (("-D" "--default-definitions") path "Definition file to be automatically used in maps"
+	      (allow-definitions path)
+	      (default-definitions (cons path (default-definitions))))
+	     #:args ((filearg "-"))
+	     filearg)))
+       (if (string=? filename "-")
+	   (write-dot-file (temporary-file-from-port (current-input-port)))
+	   (begin
+	     (output-filename filename)
+	     (write-dot-file filename)))))
+    ((filename)
+     (if (or (string=? filename "-") (string=? filename ""))
+	 (write-dot-file (temporary-file-from-port (current-input-port)))
+	 (begin
+	   (output-filename filename)
+	   (write-dot-file filename))))
+    ((pred allowed-defs default-defs filename)
+     (url-predicate pred)
+     (apply allow-definitions allowed-defs)
+     (apply allow-definitions default-defs)
+     (default-definitions (append default-defs (default-definitions)))
+     (if (or (string=? filename "-") (string=? filename ""))
+	 (write-dot-file (temporary-file-from-port (current-input-port)))
+	 (begin
+	   (output-filename filename)
+	   (write-dot-file filename))))))
 
 (provide/contract
- (main (-> any))
+ (main (case->
+	(-> any)
+	(-> string? any)
+	(-> string? (listof string?) (listof string?) string? any)))
  (write-dot-file (-> string? any))
+ (allow-definitions (-> string? any))
  (output-filename (->* () (string?) string?)))
