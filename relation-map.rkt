@@ -96,7 +96,7 @@
 
 (define (render-dot-string dot-string)
   (let ((out (open-output-string)))
-    (make-map-page out (dot-string->map dot-string))
+    (make-map-page out ".plot" (dot-string->map dot-string))
     (get-output-string out)))
 
 (define (main)
