@@ -14,7 +14,7 @@
 (define create-files (make-parameter #f))
 
 (define (display-doctype (out-port (current-output-port)))
-  (display "<!DOCTYPE html>\n" out-port))
+  (display "<!DOCTYPE html>" out-port))
 
 (define (dot-path-with-suffix path suffix)
   (path->string (path-replace-suffix path suffix)))
@@ -58,7 +58,7 @@
 			     (cdddr xexpr)))))
 	 (with-handlers
 	     ((exn:fail:filesystem? void))
-	   (call-with-output-file (cadr (cadr area))
+	   (call-with-output-file (cadar area)
 	     (lambda (out)
 	       (display-doctype out)
 	       (display-xml/content
@@ -69,7 +69,7 @@
 		    (link ((rel "stylesheet") (type "text/css")
 			   (href "style.css"))))
 		   (body
-		    (h1 ,(cadr (cdddr area))))))
+		    (h1 ,(cadar (cdddr area))))))
 		out))
 	     #:exists 'error))))
   xexpr)
