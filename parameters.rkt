@@ -14,7 +14,7 @@
 
 (define url-predicate (make-parameter ""))
 
-(define definition-files (make-parameter null))
+(define definition-files (make-parameter (make-hash)))
 
 (define default-definitions (make-parameter '()))
 

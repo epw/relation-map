@@ -7,9 +7,9 @@
 	 racket/file
 	 racket/port)
 
-(require "parameters.rkt")
+(require relation-map/parameters)
 
-(require (prefix-in write-dot-file: "write-dot-file.rkt"))
+(require (prefix-in write-dot-file: relation-map/write-dot-file))
 
 (define create-files (make-parameter #f))
 

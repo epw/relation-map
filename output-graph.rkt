@@ -14,8 +14,8 @@
 (require racket/contract)
 (require racket/path)
 
-(require "indent.rkt")
-(require "parameters.rkt")
+(require relation-map/indent)
+(require relation-map/parameters)
 
 (struct node (name shape))
 
@@ -142,26 +142,38 @@
 
 (define (allow-definitions definitions)
   (if (directory-exists? definitions)
-      (definition-files (append (map (lambda (path)
-				       (format "~a/~a" definitions
-					       (path->string path)))
-				     (directory-list definitions))
-				(definition-files)))
-      (definition-files (cons definitions (definition-files)))))
+      (for/list ((f (directory-list definitions)))
+		(hash-set! (definition-files)
+			   (path->string (last (explode-path f)))
+			   (build-path definitions f)))
+;      (definition-files (append (map (lambda (path)
+;				       (path->string
+;					(last
+;					 (explode-path (string->path
+;							(format "~a/~a"
+;								definitions
+;								(path->string
+;								 path)))))))
+;				     (directory-list definitions))
+;				(definition-files)))
+      (hash-set! (definition-files) (path->string (last (explode-path
+							 (string->path
+							  definitions))))
+		 definitions)))
+;      (definition-files
+;	(cons (path->string (last (explode-path (string->path definitions))))
+;	      (definition-files)))))
 
 (define (allow-definitions* . definitions)
   (definition-files (append definitions (definition-files))))
 
 (define (use definitions)
-  (if (not (empty? (filter (lambda (def)
-			     (string=? definitions
-				       (path->string
-					(file-name-from-path
-					 (string->path def)))))
-		      (definition-files))))
-      (load definitions)
-      (display (format "Error: definitions file ~a not accepted.~%"
-		       definitions) (current-error-port))))
+  (let ((def-file (hash-ref (definition-files) definitions #f)))
+    (display (hash-ref (definition-files) definitions) (current-error-port))
+    (if def-file
+	(load (hash-ref (definition-files) definitions))
+	(display (format "Error: definitions file ~a not accepted.~%"
+			 definitions) (current-error-port)))))
 
 (define-syntax-rule (label object identifier)
   (define identifier object))

@@ -14,9 +14,9 @@
 	 racket/file
 	 racket/contract)
 
-(require "output-graph.rkt"
-	 "parameters.rkt"
-	 "definition-base.rkt")
+(require relation-map/output-graph
+	 relation-map/parameters
+	 relation-map/definition-base)
 
 (define (get-write-line in out)
   (let ((line (read-line in)))
@@ -39,9 +39,10 @@
 
 (define (write-dot-file in-file)
   (let ((ns (make-base-empty-namespace)))
-    (namespace-attach-module (current-namespace) "definition-base.rkt" ns)
+    (namespace-attach-module (current-namespace) 'relation-map/definition-base
+			     ns)
     (parameterize ((current-namespace ns))
-      (namespace-require "definition-base.rkt")
+      (namespace-require 'relation-map/definition-base)
       (with-handlers ((exn:fail?
 		       (lambda (v)
 			 (display
