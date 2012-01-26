@@ -169,7 +169,7 @@
 
 (define (use definitions)
   (let ((def-file (hash-ref (definition-files) definitions #f)))
-    (display (hash-ref (definition-files) definitions) (current-error-port))
+;    (display (hash-ref (definition-files) definitions) (current-error-port))
     (if def-file
 	(load (hash-ref (definition-files) definitions))
 	(display (format "Error: definitions file ~a not accepted.~%"
